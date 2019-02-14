@@ -2,12 +2,57 @@
  * 	memory game
  ********************************************************/
 
+//game timer
+const timer = document.querySelector("#gameplayTime");
+const counter = document.querySelector("#movesNumber");
+const resetAction = document.querySelector("#reset-btn");
 const cards = document.querySelectorAll('.memory-card');
-
-
+const showScore = document.querySelector("#scoreHoder");
 let hasFlippedCard = false;
 let lockBoard = false;
 let firstCard, secondCard;
+let interval;
+var second = 0,
+	minute = 0,
+	moves = 0,
+	totalScore = 0;
+
+function resetGame() {
+	clearInterval(interval);
+	second = 0;
+	minute = 0;
+	moves = 0;
+	totalScore = 0;
+	showScore.innerHTML =  totalScore;
+	timer.innerHTML = minute + ":" + second;
+	counter.innerHTML =  moves;
+	resetBoard();
+	shuffle();
+}
+
+function startTimer() {
+	interval = setInterval(function () {
+		timer.innerHTML = minute + ":" + second;
+		second++;
+		if (second == 60) {
+			minute++;
+			second = 0;
+		}
+	}, 1000);
+}
+
+function moveCounter() {
+	moves++;
+	counter.innerHTML = moves;
+	//start timer on first move
+	if (moves == 1) {
+		second = 0;
+		minute = 0;
+		hour = 0;
+		startTimer();
+	}
+}
+
 
 function flipCard() {
 	if (lockBoard) return;
@@ -17,6 +62,7 @@ function flipCard() {
 
 	if (!hasFlippedCard) {
 		// first click
+		moveCounter();
 		hasFlippedCard = true;
 		firstCard = this;
 
@@ -27,6 +73,11 @@ function flipCard() {
 	secondCard = this;
 
 	checkForMatch();
+}
+
+function addScore() {
+	totalScore = totalScore + Math.round(6000 - ((second + (minute * 60)) * moves));
+	showScore.innerHTML = totalScore;
 }
 
 function checkForMatch() {
@@ -40,6 +91,7 @@ function disableCards() {
 	secondCard.removeEventListener('click', flipCard);
 
 	resetBoard();
+	addScore();
 }
 
 function unflipCards() {
@@ -58,14 +110,24 @@ function resetBoard() {
 	[firstCard, secondCard] = [null, null];
 }
 
-(function shuffle() {
+function shuffle() {
 	cards.forEach(card => {
-		let randomPos = Math.floor(Math.random() * 12);
-		card.style.order = randomPos;
+		setTimeout(() => {
+			let randomPos = Math.floor(Math.random() * 12);
+			card.style.order = randomPos;
+		}, 500);
+		card.classList.remove('flip');
+		card.addEventListener('click', flipCard);
 	});
+};
+
+(function startGame() {
+	shuffle();
+	resetGame();
+	resetAction.addEventListener('click', resetGame);
 })();
 
-cards.forEach(card => card.addEventListener('click', flipCard));
+
 
 
 /* end of memory game */

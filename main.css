@@ -1,4 +1,6 @@
-
+body{
+    font-family: "Segoe UI",Arial,sans-serif;
+}
 /* the game board */
 .memory-game {
     height: 650px;
@@ -49,5 +51,28 @@
 
 .front-face {
     transform: rotateY(180deg);
+}
+
+.game-control{
+    position: absolute;
+    top: 5%;
+    left: 10%;
+    font-size: 20px;
+}
+
+#reset-btn{
+    border: blue solid;
+    background: transparent;
+    font-size: 20px;
+    cursor: pointer;
+    color: blue;
+}
+
+#reset-btn:hover{
+    border: blue solid;
+    background: blue;
+    font-size: 20px;
+    cursor: pointer;
+    color: white;
 }
 
